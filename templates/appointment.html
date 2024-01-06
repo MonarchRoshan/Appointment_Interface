@@ -6,31 +6,75 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>Appointment Form</h1>
-    <form method="post">
+    
+    <form action="http://127.0.0.1:8000/api/appointments/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="appointment_id">Appointment ID:</label>
-        <input type="text" id="appointment_id" name="appointment_id"><br><br>
-
-        <label for="doctor_id">Doctor ID:</label>
-        <input type="text" id="doctor_id" name="doctor_id"><br><br>
-
-        <label for="patient_id">Patient ID:</label>
-        <input type="text" id="patient_id" name="patient_id"><br><br>
+        <h1>Appointment Form</h1>
+        <label for="doctors">Select a Doctor:</label>
+        <select name="my_model_dropdown">
+            {% for obj in doctor_list %}
+                <option value="{{ obj.doctor_id }}">{{ obj.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="appointment_time">Appointment Time:</label>
+        <select id="appointment_time" name="appointment_time" required>
+            <option value="09:00">9:00 AM</option>
+            <option value="09:20">9:20 AM</option>
+            <!-- Add other time options -->
+        </select>
+        <br><br>
 
         <label for="appointment_date">Appointment Date:</label>
-        <input type="date" id="appointment_date" name="appointment_date"><br><br>
+        <!-- Set the min attribute to restrict past dates -->
+        <input type="date" id="appointment_date" name="appointment_date" required>
+        <br><br>
 
-        <label for="appointment_time">Appointment Time:</label>
-        <input type="time" id="appointment_time" name="appointment_time"><br><br>
-
-        <label for="purpose">Purpose:</label>
-        <textarea id="purpose" name="purpose"></textarea><br><br>
+        <label for="purpose">Purpose of Visit:</label>
+        <textarea id="purpose" name="purpose" rows="4" cols="50" required></textarea>
+        <br><br>
 
         <label for="sick_information">Sick Information:</label>
-        <textarea id="sick_information" name="sick_information"></textarea><br><br>
+        <textarea id="sick_information" name="sick_information" rows="4" cols="50" required></textarea>
+        <br><br>
+
+        <!-- Hidden fields for doctor and patient IDs -->
+        <input type="hidden" id="doctor_id" name="doctor_id" value="10">
+        <input type="hidden" id="patient_id" name="patient_id" value="10">
+        <input type="hidden" id="appointment_id" name="appointment_id" value="10">
+
+        <!-- Doctor dropdown -->
+        <label for="doctors">Select a Doctor:</label>
+        <select id="doctors">
+            <!-- Options will be populated dynamically -->
+        </select>
+    
+        
+        
+        <br><br>
 
         <input type="submit" value="Submit">
+        <button id="doctor-view" type="button">Doctor View</button>
+<button id="patient-view" type="button">Patient View</button>
+
+<script>
+    document.getElementById('doctor-view').onclick = function() {
+        window.location.href = '/doctorview/';
+    };
+
+    document.getElementById('patient-view').onclick = function() {
+        window.location.href = '/patientview/';
+    };
+</script>
+
+        
     </form>
+
+    <script>
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Set the min attribute of the date input to today's date
+        document.getElementById('appointment_date').setAttribute('min', today);
+    </script>
 </body>
 </html>
